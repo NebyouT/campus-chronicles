@@ -1,0 +1,168 @@
+<div class="min-h-screen bg-gray-100 py-8">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="container mx-auto px-4">
+    <div class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="container mx-auto px-4">
+    <div class="bg-red-50 border-l-4 border-red-400 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-red-700">{{ error }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post Content -->
+  <div *ngIf="!loading && !error && post" class="container mx-auto px-4">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <!-- Post Header -->
+      <div class="p-6 border-b">
+        <div class="flex items-center">
+          <div class="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+            <span class="text-indigo-600 font-medium text-xl">{{ post.userName }}</span>
+          </div>
+          <div class="ml-4">
+            <h2 class="text-xl font-semibold text-gray-900">{{ post.userName }}</h2>
+            <div class="flex items-center text-sm text-gray-500">
+              <span>{{ post.department }}</span>
+              <span class="mx-2">&bull;</span>
+              <span><b>GC {{ post.graduationYear }}</b></span>
+              <span class="mx-2">&bull;</span>
+              <span>{{ post.createdAt | date:'mediumDate' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post Image -->
+      <div class="relative">
+        <img [src]="post.imageUrl" 
+             [alt]="'Photo by ' + post.userName"
+             class="w-full h-[600px] object-cover">
+      </div>
+
+      <!-- Post Actions -->
+      <div class="p-6 border-b">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <!-- Like Button -->
+            <button (click)="toggleLike()" 
+                    class="flex items-center space-x-2 text-gray-600 hover:text-indigo-600">
+              <svg [class.text-red-500]="post.isLiked"
+                   class="h-6 w-6" 
+                   [class.fill-current]="post.isLiked"
+                   xmlns="http://www.w3.org/2000/svg" 
+                   fill="none" 
+                   viewBox="0 0 24 24" 
+                   stroke="currentColor">
+                <path stroke-linecap="round" 
+                      stroke-linejoin="round" 
+                      stroke-width="2" 
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+              <span>{{ post.likes }} likes</span>
+            </button>
+          </div>
+        </div>
+        <!-- Caption -->
+        <p class="mt-4 text-gray-600">{{ post.caption }}</p>
+      </div>
+
+      <!-- Testimonials Section -->
+      <div class="p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Testimonials</h3>
+        
+        <!-- Add Testimonial Form -->
+        <form *ngIf="isLoggedIn" 
+              (ngSubmit)="addTestimonial()" 
+              class="mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="min-w-0 flex-1">
+              <div class="border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+                <textarea
+                  [(ngModel)]="newTestimonial"
+                  name="testimonial"
+                  rows="3"
+                  class="block w-full py-3 px-4 border-0 resize-none focus:ring-0 sm:text-sm"
+                  placeholder="Share your thoughts and congratulations..."></textarea>
+              </div>
+            </div>
+            <div class="flex-shrink-0">
+              <button
+                type="submit"
+                [disabled]="!newTestimonial.trim()"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
+                Post Testimonial
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Testimonials List -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div *ngFor="let testimonial of post.testimonials" 
+               class="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+            <div class="p-6 h-full flex flex-col">
+              <!-- Author Info -->
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center">
+                  <div class="h-12 w-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-lg">
+                    <span class="text-white font-medium">{{ testimonial.author?.fullName || testimonial.userName }}</span>
+                  </div>
+                  <div class="ml-4">
+                    <div class="flex items-center">
+                      <p class="text-base font-semibold text-gray-900">{{ testimonial.author?.fullName || testimonial.userName }}</p>
+                      <span class="mx-2 text-gray-300">&bull;</span>
+                      <p class="text-sm text-gray-500">{{ testimonial.createdAt | date:'MMM d, y' }}</p>
+                    </div>
+                    <div class="text-sm text-gray-600" *ngIf="testimonial.author">
+                      {{ testimonial.author.department }}
+                      <span *ngIf="testimonial.author.graduationYear">
+                        - Class of {{ testimonial.author.graduationYear }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Testimonial Content -->
+              <div class="flex-grow relative bg-gray-50 rounded-lg p-6">
+                <svg class="absolute top-0 left-0 transform -translate-x-3 -translate-y-2 h-8 w-8 text-gray-300" 
+                     fill="currentColor" 
+                     viewBox="0 0 32 32" 
+                     aria-hidden="true">
+                  <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
+                </svg>
+                <p class="relative pl-8 text-lg leading-relaxed text-gray-700 italic">{{ testimonial.message }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No Testimonials Message -->
+        <div *ngIf="!post.testimonials?.length" class="text-center py-12 bg-gray-50 rounded-xl">
+          <div class="mx-auto h-16 w-16 text-gray-400">
+            <svg class="h-full w-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    stroke-width="1" 
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+          </div>
+          <p class="mt-4 text-lg font-medium text-gray-900">No testimonials yet</p>
+          <p class="mt-2 text-base text-gray-500">Be the first to share your thoughts!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

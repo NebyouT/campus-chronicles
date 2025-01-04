@@ -1,0 +1,102 @@
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Share Your Graduation Photo</h2>
+
+    <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Image Upload -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">
+          Graduation Photo *
+        </label>
+        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-500 cursor-pointer transition-colors duration-200"
+             (click)="fileInput.click()">
+          <div class="space-y-1 text-center" *ngIf="!previewUrl">
+            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+              <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <div class="flex text-sm text-gray-600">
+              <span class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500">
+                Upload a photo
+              </span>
+            </div>
+            <p class="text-xs text-gray-500">PNG, JPG up to 5MB</p>
+          </div>
+          <div *ngIf="previewUrl" class="relative w-full">
+            <img [src]="previewUrl" class="w-full h-64 object-cover rounded-md" alt="Preview">
+            <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
+              <span class="text-white">Change Photo</span>
+            </div>
+          </div>
+        </div>
+        <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden">
+        <p *ngIf="error" class="text-red-500 text-sm mt-1">{{ error }}</p>
+      </div>
+
+      <!-- Caption -->
+      <div>
+        <label for="caption" class="block text-sm font-medium text-gray-700">Caption *</label>
+        <textarea id="caption" formControlName="caption" rows="3"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition-colors duration-200"
+                  placeholder="Share your graduation moment..."></textarea>
+        <div *ngIf="postForm.get('caption')?.touched && postForm.get('caption')?.invalid"
+             class="text-red-500 text-sm mt-1">
+          Caption is required (minimum 3 characters)
+        </div>
+      </div>
+
+      <!-- Graduation Year -->
+      <div>
+        <label for="graduationYear" class="block text-sm font-medium text-gray-700">Graduation Year *</label>
+        <input type="number" id="graduationYear" formControlName="graduationYear"
+               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition-colors duration-200">
+      </div>
+
+      <!-- Department -->
+      <div>
+        <label for="department" class="block text-sm font-medium text-gray-700">Department *</label>
+        <input type="text" id="department" formControlName="department"
+               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition-colors duration-200">
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex justify-end">
+        <button type="submit"
+                [disabled]="postForm.invalid || !selectedFile || isSubmitting"
+                class="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+          <svg *ngIf="isSubmitting" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{ isSubmitting ? 'Posting...' : 'Share Post' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="showSuccess" class="fixed inset-0 flex items-center justify-center z-50">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="bg-white rounded-lg p-8 max-w-sm w-full mx-4 relative z-10">
+      <div class="text-center">
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+          <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">Post shared successfully!</h3>
+        <p class="mt-2 text-sm text-gray-500">Your graduation photo has been shared with the community.</p>
+        <div class="mt-6 flex justify-center space-x-4">
+          <button (click)="resetForm()" 
+                  class="inline-flex justify-center px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-100 border border-transparent rounded-md hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 transition-colors duration-200">
+            Share Another
+          </button>
+          <button routerLink="/gallery" 
+                  class="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-transparent rounded-md hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 transition-colors duration-200">
+            View Gallery
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

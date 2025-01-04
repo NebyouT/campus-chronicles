@@ -1,0 +1,174 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Create your account
+      </h2>
+    </div>
+    <form class="mt-8 space-y-6" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="rounded-md shadow-sm space-y-4">
+        <!-- Name -->
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            required
+            class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+            placeholder="Enter your full name"
+          />
+          <div *ngIf="registerForm.get('name')?.touched && registerForm.get('name')?.invalid" class="mt-1 text-sm text-red-600">
+            <div *ngIf="registerForm.get('name')?.errors?.['required']">Name is required</div>
+            <div *ngIf="registerForm.get('name')?.errors?.['minlength']">Name must be at least 3 characters</div>
+          </div>
+        </div>
+
+        <!-- Student ID -->
+        <div>
+          <label for="studentId" class="block text-sm font-medium text-gray-700">Student ID</label>
+          <input
+            id="studentId"
+            type="text"
+            formControlName="studentId"
+            required
+            class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+            placeholder="Enter your student ID"
+          />
+          <div *ngIf="registerForm.get('studentId')?.touched && registerForm.get('studentId')?.invalid" class="mt-1 text-sm text-red-600">
+            <div *ngIf="registerForm.get('studentId')?.errors?.['required']">Student ID is required</div>
+            <div *ngIf="registerForm.get('studentId')?.errors?.['pattern']">Student ID must contain only letters and numbers</div>
+          </div>
+        </div>
+
+        <!-- Department -->
+        <div>
+          <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
+          <select
+            id="department"
+            formControlName="department"
+            required
+            class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          >
+            <option value="">Select your department</option>
+            <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+          </select>
+          <div *ngIf="registerForm.get('department')?.touched && registerForm.get('department')?.invalid" class="mt-1 text-sm text-red-600">
+            <div *ngIf="registerForm.get('department')?.errors?.['required']">Department is required</div>
+          </div>
+        </div>
+
+        <!-- Graduation Year -->
+        <div>
+          <label for="graduationYear" class="block text-sm font-medium text-gray-700">Graduation Year</label>
+          <select
+            id="graduationYear"
+            formControlName="graduationYear"
+            required
+            class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          >
+            <option value="">Select graduation year</option>
+            <option *ngFor="let year of graduationYears" [value]="year">{{ year }}</option>
+          </select>
+          <div *ngIf="registerForm.get('graduationYear')?.touched && registerForm.get('graduationYear')?.invalid" class="mt-1 text-sm text-red-600">
+            <div *ngIf="registerForm.get('graduationYear')?.errors?.['required']">Graduation year is required</div>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            required
+            class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+            placeholder="Enter your password"
+          />
+          <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" class="mt-1 text-sm text-red-600">
+            <div *ngIf="registerForm.get('password')?.errors?.['required']">Password is required</div>
+            <div *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</div>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            formControlName="confirmPassword"
+            required
+            class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+            placeholder="Confirm your password"
+          />
+          <div *ngIf="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.invalid || registerForm.hasError('mismatch'))" class="mt-1 text-sm text-red-600">
+            <div *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Password confirmation is required</div>
+            <div *ngIf="registerForm.hasError('mismatch')">Passwords do not match</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button
+          type="submit"
+          [disabled]="registerForm.invalid || loading"
+          class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+            <svg
+              *ngIf="!loading"
+              class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <svg
+              *ngIf="loading"
+              class="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          </span>
+          {{ loading ? 'Creating account...' : 'Create account' }}
+        </button>
+      </div>
+
+      <div *ngIf="error" class="mt-3 text-center text-sm text-red-600">
+        {{ error }}
+      </div>
+
+      <div class="text-center">
+        <p class="text-sm text-gray-600">
+          Already have an account?
+          <a routerLink="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
+            Sign in
+          </a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

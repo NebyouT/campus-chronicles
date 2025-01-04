@@ -1,0 +1,143 @@
+<header class="bg-white shadow-md fixed w-full top-0 z-50">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16">
+      <!-- Left side - Logo and Navigation -->
+      <div class="flex">
+        <!-- Logo -->
+        <div class="flex-shrink-0 flex items-center">
+          <a routerLink="/gallery" class="flex items-center space-x-2">
+            <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span class="text-xl font-bold text-indigo-600">DDU Campus Chronicles</span>
+          </a>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+          <a routerLink="/gallery" 
+             routerLinkActive="border-indigo-500 text-gray-900"
+             [routerLinkActiveOptions]="{exact: true}"
+             class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
+            Gallery
+          </a>
+          <a *ngIf="currentUser$ | async" 
+             routerLink="/create-post"
+             routerLinkActive="border-indigo-500 text-gray-900"
+             class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
+            Share Photo
+          </a>
+        </div>
+      </div>
+
+      <!-- Right side - Auth Buttons -->
+      <div class="hidden sm:flex sm:items-center sm:space-x-4">
+        <!-- Logged in state -->
+        <ng-container *ngIf="currentUser$ | async as user">
+          <span class="text-sm text-gray-700">Welcome, {{ user.fullName }}</span>
+          <button (click)="logout()"
+                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+            <svg class="mr-2 -ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            </svg>
+            Logout
+          </button>
+        </ng-container>
+
+        <!-- Logged out state -->
+        <ng-container *ngIf="!(currentUser$ | async)">
+          <a routerLink="/login"
+             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-50 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+            Login
+          </a>
+          <a routerLink="/register"
+             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+            Register
+          </a>
+        </ng-container>
+      </div>
+
+      <!-- Mobile menu button -->
+      <div class="flex items-center sm:hidden">
+        <button (click)="toggleMobileMenu()"
+                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                [attr.aria-expanded]="isMobileMenuOpen">
+          <span class="sr-only">Open main menu</span>
+          <!-- Icon when menu is closed -->
+          <svg *ngIf="!isMobileMenuOpen" class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <!-- Icon when menu is open -->
+          <svg *ngIf="isMobileMenuOpen" class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="sm:hidden" [class.hidden]="!isMobileMenuOpen">
+      <div class="pt-2 pb-3 space-y-1">
+        <a routerLink="/gallery"
+           routerLinkActive="bg-indigo-50 border-indigo-500 text-indigo-700"
+           [routerLinkActiveOptions]="{exact: true}"
+           class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors duration-200"
+           (click)="isMobileMenuOpen = false">
+          Gallery
+        </a>
+        <a *ngIf="currentUser$ | async"
+           routerLink="/create-post"
+           routerLinkActive="bg-indigo-50 border-indigo-500 text-indigo-700"
+           class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors duration-200"
+           (click)="isMobileMenuOpen = false">
+          Share Photo
+        </a>
+      </div>
+      
+      <!-- Mobile menu auth buttons -->
+      <div class="pt-4 pb-3 border-t border-gray-200">
+        <ng-container *ngIf="currentUser$ | async as user">
+          <div class="flex items-center px-4">
+            <div class="flex-shrink-0">
+              <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                <span class="text-indigo-600 font-medium">{{ user.fullName.charAt(0) }}</span>
+              </div>
+            </div>
+            <div class="ml-3">
+              <div class="text-base font-medium text-gray-800">{{ user.fullName }}</div>
+              <div class="text-sm font-medium text-gray-500">Student</div>
+            </div>
+          </div>
+          <div class="mt-3 space-y-1">
+            <button (click)="logout()" 
+                    class="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors duration-200">
+              Logout
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="!(currentUser$ | async)">
+          <div class="space-y-1 px-4">
+            <a routerLink="/login"
+               class="block text-center py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors duration-200"
+               (click)="isMobileMenuOpen = false">
+              Login
+            </a>
+            <a routerLink="/register"
+               class="block text-center py-2 text-base font-medium text-indigo-600 hover:text-indigo-700 hover:bg-gray-100 transition-colors duration-200"
+               (click)="isMobileMenuOpen = false">
+              Register
+            </a>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Spacer to prevent content from hiding under fixed header -->
+<div class="h-16"></div>

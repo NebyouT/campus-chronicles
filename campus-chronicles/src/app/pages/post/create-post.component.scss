@@ -1,0 +1,17 @@
+:host {
+  display: block;
+  min-height: calc(100vh - 64px); // Adjust based on your navbar height
+  background-color: #f3f4f6;
+}
+
+.container {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+// Override default form styles if needed
+:host ::ng-deep {
+  .mat-form-field {
+    width: 100%;
+  }
+}
